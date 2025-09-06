@@ -15,6 +15,7 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [emailSent, setEmailSent] = useState(false);
 
   const examTypes = [
     'PO',
@@ -25,7 +26,7 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
     'OTHER'
   ];
 
-  // Generate 9 digit random ID
+  // Generate 9 digit random ID (for internal use)
   const generateUserId = () => {
     return Math.floor(100000000 + Math.random() * 900000000);
   };
@@ -66,43 +67,48 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
     try {
       const userId = generateUserId();
       
-      // Insert user data into Supabase
-      const { data, error } = await supabase
-        .from('users')
-        .insert([
-          {
-            user_id: userId,
+      // Supabase Auth signup with email verification
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
             full_name: formData.fullName,
-            email: formData.email,
             mobile: formData.mobile,
             exam_type: formData.examType,
-            password: formData.password, // In real app, hash this!
-            created_at: new Date().toISOString()
+            user_id: userId // Custom random ID for internal use
           }
-        ]);
-
-      if (error) throw error;
-
-      alert(`Account created successfully! Your User ID: ${userId}`);
-      onClose();
-      
-      // Reset form
-      setFormData({
-        fullName: '',
-        email: '',
-        mobile: '',
-        examType: '',
-        password: '',
-        rePassword: '',
-        acceptTerms: false
+        }
       });
+
+      if (authError) throw authError;
+
+      // Show email verification message
+      setEmailSent(true);
       
     } catch (error) {
       console.error('Error creating account:', error);
-      alert('Error creating account. Please try again.');
+      if (error.message.includes('already registered')) {
+        alert('Email already registered. Please try logging in.');
+      } else {
+        alert('Error creating account. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleBackToForm = () => {
+    setEmailSent(false);
+    setFormData({
+      fullName: '',
+      email: '',
+      mobile: '',
+      examType: '',
+      password: '',
+      rePassword: '',
+      acceptTerms: false
+    });
   };
 
   if (!isOpen) return null;
@@ -119,135 +125,170 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
           <img src="/logo.png" alt="ExamNation" />
         </div>
         
-        {/* Title */}
-        <h2 className="popup-title">Create Account</h2>
-        
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="signup-form">
-          
-          {/* Full Name */}
-          <div className="form-group">
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleInputChange}
-              className={errors.fullName ? 'error' : ''}
-            />
-            {errors.fullName && <span className="error-text">{errors.fullName}</span>}
-          </div>
+        {!emailSent ? (
+          <>
+            {/* Title */}
+            <h2 className="popup-title">Create Account</h2>
+            
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="signup-form">
+              
+              {/* Full Name */}
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="fullName"
+                  placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className={errors.fullName ? 'error' : ''}
+                />
+                {errors.fullName && <span className="error-text">{errors.fullName}</span>}
+              </div>
 
-          {/* Email */}
-          <div className="form-group">
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className={errors.email ? 'error' : ''}
-            />
-            {errors.email && <span className="error-text">{errors.email}</span>}
-          </div>
+              {/* Email */}
+              <div className="form-group">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={errors.email ? 'error' : ''}
+                />
+                {errors.email && <span className="error-text">{errors.email}</span>}
+              </div>
 
-          {/* Mobile Number */}
-          <div className="form-group">
-            <input
-              type="tel"
-              name="mobile"
-              placeholder="Mobile Number"
-              value={formData.mobile}
-              onChange={handleInputChange}
-              className={errors.mobile ? 'error' : ''}
-            />
-            {errors.mobile && <span className="error-text">{errors.mobile}</span>}
-          </div>
+              {/* Mobile Number */}
+              <div className="form-group">
+                <input
+                  type="tel"
+                  name="mobile"
+                  placeholder="Mobile Number"
+                  value={formData.mobile}
+                  onChange={handleInputChange}
+                  className={errors.mobile ? 'error' : ''}
+                />
+                {errors.mobile && <span className="error-text">{errors.mobile}</span>}
+              </div>
 
-          {/* Exam Type Dropdown */}
-          <div className="form-group">
-            <select
-              name="examType"
-              value={formData.examType}
-              onChange={handleInputChange}
-              className={errors.examType ? 'error' : ''}
-            >
-              <option value="">Select Exam Type</option>
-              {examTypes.map((type, index) => (
-                <option key={index} value={type}>{type}</option>
-              ))}
-            </select>
-            {errors.examType && <span className="error-text">{errors.examType}</span>}
-          </div>
+              {/* Exam Type Dropdown */}
+              <div className="form-group">
+                <select
+                  name="examType"
+                  value={formData.examType}
+                  onChange={handleInputChange}
+                  className={errors.examType ? 'error' : ''}
+                >
+                  <option value="">Select Exam Type</option>
+                  {examTypes.map((type, index) => (
+                    <option key={index} value={type}>{type}</option>
+                  ))}
+                </select>
+                {errors.examType && <span className="error-text">{errors.examType}</span>}
+              </div>
 
-          {/* Password */}
-          <div className="form-group">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className={errors.password ? 'error' : ''}
-            />
-            {errors.password && <span className="error-text">{errors.password}</span>}
-          </div>
+              {/* Password */}
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={errors.password ? 'error' : ''}
+                />
+                {errors.password && <span className="error-text">{errors.password}</span>}
+              </div>
 
-          {/* Re-enter Password */}
-          <div className="form-group">
-            <input
-              type="password"
-              name="rePassword"
-              placeholder="Re-enter Password"
-              value={formData.rePassword}
-              onChange={handleInputChange}
-              className={errors.rePassword ? 'error' : ''}
-            />
-            {errors.rePassword && <span className="error-text">{errors.rePassword}</span>}
-          </div>
+              {/* Re-enter Password */}
+              <div className="form-group">
+                <input
+                  type="password"
+                  name="rePassword"
+                  placeholder="Re-enter Password"
+                  value={formData.rePassword}
+                  onChange={handleInputChange}
+                  className={errors.rePassword ? 'error' : ''}
+                />
+                {errors.rePassword && <span className="error-text">{errors.rePassword}</span>}
+              </div>
 
-          {/* Terms and Conditions */}
-          <div className="form-group checkbox-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                name="acceptTerms"
-                checked={formData.acceptTerms}
-                onChange={handleInputChange}
-              />
-              <span className="checkmark"></span>
-              I accept the{' '}
-              <a 
-                href="https://examination.netlify.app/terms" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="terms-link"
+              {/* Terms and Conditions */}
+              <div className="form-group checkbox-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="acceptTerms"
+                    checked={formData.acceptTerms}
+                    onChange={handleInputChange}
+                  />
+                  <span className="checkmark"></span>
+                  I accept the{' '}
+                  <a 
+                    href="https://examination.netlify.app/terms" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="terms-link"
+                  >
+                    terms and conditions
+                  </a>
+                </label>
+                {errors.acceptTerms && <span className="error-text">{errors.acceptTerms}</span>}
+              </div>
+
+              {/* Sign Up Button */}
+              <button 
+                type="submit" 
+                className="signup-btn"
+                disabled={loading}
               >
-                terms and conditions
-              </a>
-            </label>
-            {errors.acceptTerms && <span className="error-text">{errors.acceptTerms}</span>}
-          </div>
+                {loading ? 'Creating Account...' : 'SIGN UP'}
+              </button>
 
-          {/* Sign Up Button */}
-          <button 
-            type="submit" 
-            className="signup-btn"
-            disabled={loading}
-          >
-            {loading ? 'Creating Account...' : 'SIGN UP'}
-          </button>
+              {/* Return to Login */}
+              <button 
+                type="button" 
+                className="return-login-btn"
+                onClick={onSwitchToLogin}
+              >
+                Return to login
+              </button>
 
-          {/* Return to Login */}
-          <button 
-            type="button" 
-            className="return-login-btn"
-            onClick={onSwitchToLogin}
-          >
-            Return to login
-          </button>
-
-        </form>
+            </form>
+          </>
+        ) : (
+          <>
+            {/* Email Verification Message */}
+            <h2 className="popup-title">Check Your Email</h2>
+            <div className="verification-message">
+              <div style={{ fontSize: '60px', color: '#4A90E2', marginBottom: '20px' }}>📧</div>
+              <p style={{ color: '#333', fontSize: '16px', textAlign: 'center', lineHeight: '1.5' }}>
+                Verification email has been sent to <strong>{formData.email}</strong>
+              </p>
+              <p style={{ color: '#666', fontSize: '14px', textAlign: 'center', marginTop: '10px' }}>
+                Please check your email and click the verification link to activate your account. 
+                <strong> Also check your spam folder.</strong>
+              </p>
+            </div>
+            
+            <button 
+              className="signup-btn"
+              onClick={handleBackToForm}
+              style={{ marginTop: '20px' }}
+            >
+              Back to Signup
+            </button>
+            
+            <button 
+              type="button" 
+              className="return-login-btn"
+              onClick={onSwitchToLogin}
+            >
+              Return to login
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

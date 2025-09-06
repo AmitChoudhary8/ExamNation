@@ -38,20 +38,30 @@ const LoginPopup = ({ isOpen, onClose, onSwitchToSignup, onSwitchToForgotPasswor
     setLoading(true);
     
     try {
-      // Check user in Supabase
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('email', formData.email)
-        .eq('password', formData.password) // In real app, use proper password hashing
-        .single();
+      // Supabase Auth login
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password
+      });
 
-      if (error || !data) {
-        throw new Error('Invalid email or password');
+      if (authError) {
+        if (authError.message.includes('Email not confirmed')) {
+          alert('Please verify your email first. Check your email and spam folder for verification link.');
+          return;
+        }
+        throw authError;
       }
 
-      alert(`Welcome back, ${data.full_name}! Login successful.`);
-      onLoginSuccess(data);
+      // Get user data from auth metadata
+      const userData = {
+        full_name: authData.user.user_metadata.full_name,
+        email: authData.user.email,
+        user_id: authData.user.user_metadata.user_id,
+        mobile: authData.user.user_metadata.mobile,
+        exam_type: authData.user.user_metadata.exam_type
+      };
+
+      onLoginSuccess(userData);
       onClose();
       
       // Reset form
