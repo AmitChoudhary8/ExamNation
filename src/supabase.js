@@ -1,17 +1,12 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+// Netlify Environment Variables se Supabase connect karna
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-// Debug: Check if variables are loaded
-console.log('Supabase URL:', supabaseUrl);
-console.log('Supabase Key exists:', !!supabaseKey);
+// Debug ke liye
+console.log('Supabase URL:', supabaseUrl)
+console.log('Supabase Key exists:', !!supabaseAnonKey)
 
-// Error handling
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Missing Supabase environment variables');
-  console.error('URL:', supabaseUrl);
-  console.error('Key:', supabaseKey);
-}
-
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Supabase client banayenge
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
