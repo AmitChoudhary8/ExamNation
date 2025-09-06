@@ -1,0 +1,15 @@
+.homepage { padding-top:125px; min-height:60vh; }
+.homepage-card {
+  display: flex; align-items: center; gap:20px; padding:22px 18px;
+  border-radius:16px; background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+  margin-bottom:22px; text-decoration: none; color: #222; border:2px solid transparent; transition:all 0.2s;
+}
+.homepage-card:hover { border-color:#4A90E2; box-shadow: 0 8px 28px rgba(74,144,226,0.16);}
+.card-icon { 
+  background: #4A90E2; color: #fff; border-radius: 12px; padding:13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.card-arrow { margin-left: auto; display:flex; align-items:center;}
+.homepage-card h3 { font-weight:600; font-size:19px; }
+.homepage-card p { color:#444; font-size:14px; margin-top:2px;}
+@media (min-width:768px) { .homepage { max-width:920px; margin:0 auto; padding-top:150px;} .homepage-card{font-size:18px;} }
