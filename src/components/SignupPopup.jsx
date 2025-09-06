@@ -16,6 +16,8 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [emailSent, setEmailSent] = useState(false);
+  // 🔴 Debug UI State Added
+  const [debugMessage, setDebugMessage] = useState('');
 
   const examTypes = [
     'PO',
@@ -60,6 +62,9 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // 🔴 Clear previous debug message
+    setDebugMessage('');
+    
     if (!validateForm()) return;
 
     setLoading(true);
@@ -81,13 +86,20 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
         }
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        // 🔴 Set debug message instead of throwing
+        setDebugMessage(authError.message);
+        console.error('Signup error details:', authError);
+        return; // Don't throw, just return
+      }
 
       // Show email verification message
       setEmailSent(true);
       
     } catch (error) {
       console.error('Error creating account:', error);
+      // 🔴 Show debug message for unexpected errors too
+      setDebugMessage(error.message || 'An unexpected error occurred');
       if (error.message.includes('already registered')) {
         alert('Email already registered. Please try logging in.');
       } else {
@@ -100,6 +112,8 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
 
   const handleBackToForm = () => {
     setEmailSent(false);
+    // 🔴 Clear debug message when going back
+    setDebugMessage('');
     setFormData({
       fullName: '',
       email: '',
@@ -129,6 +143,13 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
           <>
             {/* Title */}
             <h2 className="popup-title">Create Account</h2>
+            
+            {/* 🔴 Debug Message Display */}
+            {debugMessage && (
+              <div className="debug-box">
+                <strong>Debug Error:</strong> {debugMessage}
+              </div>
+            )}
             
             {/* Form */}
             <form onSubmit={handleSubmit} className="signup-form">
