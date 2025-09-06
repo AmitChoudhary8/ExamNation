@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { supabase } from '../supabase';
 import { FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import './ForgotPassword.css';
@@ -24,12 +25,23 @@ const ForgotPassword = () => {
 
     setLoading(true);
     
-    // Simulate email sending (replace with actual email service)
-    setTimeout(() => {
+    try {
+      // Supabase password reset
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+
+      if (error) throw error;
+
       setMessage('Password reset link has been sent to your email. Please check your spam folder also.');
       setEmailSent(true);
+      
+    } catch (error) {
+      console.error('Password reset error:', error);
+      alert('Error sending reset email. Please try again.');
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (
