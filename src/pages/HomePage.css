@@ -1,15 +1,125 @@
-.homepage { padding-top:125px; min-height:60vh; }
+.homepage { 
+  padding-top: 85px; /* Reduced from 125px */
+  min-height: 60vh; 
+}
+
+/* Exam Buttons Section */
+.exam-buttons-section {
+  margin-bottom: 25px;
+  padding: 0 5px;
+}
+
+.exam-buttons-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 5px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.exam-buttons-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.exam-button {
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: fit-content;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.exam-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+  background: linear-gradient(135deg, #357ABD 0%, #2968A3 100%);
+}
+
+.exam-button:active {
+  transform: translateY(0);
+}
+
+/* Main Cards */
 .homepage-card {
-  display: flex; align-items: center; gap:20px; padding:22px 18px;
-  border-radius:16px; background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,0.09);
-  margin-bottom:22px; text-decoration: none; color: #222; border:2px solid transparent; transition:all 0.2s;
+  display: flex; 
+  align-items: center; 
+  gap: 20px; 
+  padding: 22px 18px;
+  border-radius: 16px; 
+  background: #fff; 
+  box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+  margin-bottom: 22px; 
+  text-decoration: none; 
+  color: #222; 
+  border: 2px solid transparent; 
+  transition: all 0.2s;
 }
-.homepage-card:hover { border-color:#4A90E2; box-shadow: 0 8px 28px rgba(74,144,226,0.16);}
-.card-icon { 
-  background: #4A90E2; color: #fff; border-radius: 12px; padding:13px;
-  display: flex; align-items: center; justify-content: center;
+
+.homepage-card:hover { 
+  border-color: #4A90E2; 
+  box-shadow: 0 8px 28px rgba(74,144,226,0.16);
 }
-.card-arrow { margin-left: auto; display:flex; align-items:center;}
-.homepage-card h3 { font-weight:600; font-size:19px; }
-.homepage-card p { color:#444; font-size:14px; margin-top:2px;}
-@media (min-width:768px) { .homepage { max-width:920px; margin:0 auto; padding-top:150px;} .homepage-card{font-size:18px;} }
+
+.card-icon {
+  background: #4A90E2; 
+  color: #fff; 
+  border-radius: 12px; 
+  padding: 13px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+}
+
+.card-arrow { 
+  margin-left: auto; 
+  display: flex; 
+  align-items: center;
+}
+
+.homepage-card h3 { 
+  font-weight: 600; 
+  font-size: 19px; 
+}
+
+.homepage-card p { 
+  color: #444; 
+  font-size: 14px; 
+  margin-top: 2px;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) { 
+  .homepage { 
+    max-width: 920px; 
+    margin: 0 auto; 
+    padding-top: 110px; /* Reduced from 150px */
+  } 
+  
+  .homepage-card { 
+    font-size: 18px;
+  }
+  
+  .exam-button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage {
+    padding-top: 75px;
+  }
+  
+  .exam-button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}

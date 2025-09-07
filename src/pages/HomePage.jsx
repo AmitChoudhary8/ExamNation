@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 import { FaDownload, FaNewspaper, FaCalendarAlt, FaPaperPlane } from 'react-icons/fa';
 import './HomePage.css';
 
+const examButtons = [
+  'SBI PO', 'SBI CLERK', 'IBPS PO', 'IBPS CLERK', 'RRB PO', 'RRB CLERK', 'INSURANCE', 'OTHER'
+];
+
 const sections = [
   {
     icon: <FaDownload size={28}/>,
@@ -32,6 +36,18 @@ const sections = [
 
 const HomePage = () => (
   <div className="container homepage">
+    {/* Exam Buttons Section - Horizontal Scrollable */}
+    <div className="exam-buttons-section">
+      <div className="exam-buttons-container">
+        {examButtons.map((exam, i) => (
+          <button key={i} className="exam-button">
+            {exam}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Main Sections */}
     {sections.map((sec, i) => (
       <Link to={sec.path} key={i} className="homepage-card">
         <span className="card-icon">{sec.icon}</span>
