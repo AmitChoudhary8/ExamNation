@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaEye, FaEyeOff, FaCheckCircle, FaTimesCircle, FaEnvelope } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '././utils/supabase';
+import { supabase } from './utils/supabase';
 import './AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitchToForgotPassword, onLoginSuccess }) => {
