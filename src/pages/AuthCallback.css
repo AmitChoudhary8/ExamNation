@@ -1,0 +1,164 @@
+.auth-callback-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-callback-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.callback-logo {
+  margin-bottom: 30px;
+}
+
+.callback-logo img {
+  height: 60px;
+}
+
+.verification-status h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.verification-status p {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4A90E2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.verification-success h2,
+.verification-error h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.verification-success h2 {
+  color: #28a745;
+}
+
+.verification-error h2 {
+  color: #dc3545;
+}
+
+.success-icon,
+.error-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.verification-success p {
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.thank-you {
+  color: #666;
+  font-style: italic;
+  margin-bottom: 30px !important;
+}
+
+.verification-error p {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.go-home-btn {
+  background: #4A90E2;
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-right: 10px;
+}
+
+.go-home-btn:hover {
+  background: #357ABD;
+  transform: translateY(-2px);
+}
+
+.resend-btn {
+  background: #f8f9fa;
+  color: #4A90E2;
+  border: 2px solid #4A90E2;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.resend-btn:hover {
+  background: #4A90E2;
+  color: white;
+}
+
+.error-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .auth-callback-card {
+    padding: 24px;
+    margin: 10px;
+  }
+  
+  .verification-success h2,
+  .verification-error h2 {
+    font-size: 24px;
+  }
+  
+  .success-icon,
+  .error-icon {
+    font-size: 48px;
+  }
+  
+  .go-home-btn,
+  .resend-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+  
+  .error-actions {
+    flex-direction: column;
+  }
+}
