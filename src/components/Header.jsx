@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaBars, FaUserCircle } from 'react-icons/fa';
+import { 
+  FiUser, 
+  FiDownload, 
+  FiBookOpen, 
+  FiCalendar, 
+  FiSend, 
+  FiFileText, 
+  FiShield, 
+  FiMail, 
+  FiInfo, 
+  FiMap 
+} from 'react-icons/fi';
 import AuthModal from './AuthModal';
 import './Header.css';
 
@@ -9,17 +21,17 @@ const examCategories = [
 ];
 
 const menuItems = [
-  { name: 'My Account', path: '/my-account' },
-  { name: 'Download PDF', path: '/download-pdf' },
-  { name: 'Magazines', path: '/magazines' },
-  { name: 'Calendar', path: '/calendar' },
-  { name: 'Request', path: '/request' },
-  { name: 'Blogs', path: '/blogs' },
-  { name: 'Support Us', path: '/support-us' },
-  { name: 'Terms', path: '/terms' },
-  { name: 'Contact Us', path: '/contact-us' },
-  { name: 'About Us', path: '/about-us' },
-  { name: 'Sitemap', path: '/sitemap' }
+  { name: 'My Account', path: '/my-account', icon: <FiUser size={18} /> },
+  { name: 'Download PDF', path: '/download-pdf', icon: <FiDownload size={18} /> },
+  { name: 'Magazines', path: '/magazines', icon: <FiBookOpen size={18} /> },
+  { name: 'Calendar', path: '/calendar', icon: <FiCalendar size={18} /> },
+  { name: 'Request', path: '/request', icon: <FiSend size={18} /> },
+  { name: 'Blogs', path: '/blogs', icon: <FiFileText size={18} /> },
+  { name: 'Support Us', path: '/support-us', icon: <FiShield size={18} /> },
+  { name: 'Terms', path: '/terms', icon: <FiFileText size={18} /> },
+  { name: 'Contact Us', path: '/contact-us', icon: <FiMail size={18} /> },
+  { name: 'About Us', path: '/about-us', icon: <FiInfo size={18} /> },
+  { name: 'Sitemap', path: '/sitemap', icon: <FiMap size={18} /> }
 ];
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
@@ -27,6 +39,10 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check if current page is homepage
+  const isHomePage = location.pathname === '/';
 
   const handleAuthClick = () => {
     if (isLoggedIn) {
@@ -76,14 +92,16 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
             )}
           </button>
         </div>
-        {/* Exam Category Buttons */}
-        <div className="header-categories">
-          <div className="categories-scroll">
-            {examCategories.map((c, i) => (
-              <button key={i} className="category-btn">{c}</button>
-            ))}
+        {/* Exam Category Buttons - Only show on Homepage */}
+        {isHomePage && (
+          <div className="header-categories">
+            <div className="categories-scroll">
+              {examCategories.map((c, i) => (
+                <button key={i} className="category-btn">{c}</button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         {/* Side Menu (Hamburger) */}
         {menuOpen && (
           <div className="side-menu-overlay" onClick={() => setMenuOpen(false)}>
@@ -92,7 +110,14 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
               <ul>
                 {menuItems.map((item, idx) => (
                   <li key={idx}>
-                    <Link to={item.path} onClick={() => setMenuOpen(false)}>{item.name}</Link>
+                    <Link 
+                      to={item.path} 
+                      onClick={() => setMenuOpen(false)}
+                      className="menu-item-link"
+                    >
+                      <span className="menu-icon">{item.icon}</span>
+                      <span className="menu-text">{item.name}</span>
+                    </Link>
                   </li>
                 ))}
               </ul>
