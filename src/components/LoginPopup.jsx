@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabase';
 import { FaTimes } from 'react-icons/fa';
+import Toast from './Toast';
 import './LoginPopup.css';
 
 const LoginPopup = ({ isOpen, onClose, onSwitchToSignup, onSwitchToForgotPassword, onLoginSuccess }) => {
@@ -10,6 +11,15 @@ const LoginPopup = ({ isOpen, onClose, onSwitchToSignup, onSwitchToForgotPasswor
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
+
+  const showToast = (message, type) => {
+    setToast({ show: true, message, type });
+  };
+
+  const hideToast = () => {
+    setToast({ show: false, message: '', type: '' });
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -46,21 +56,29 @@ const LoginPopup = ({ isOpen, onClose, onSwitchToSignup, onSwitchToForgotPasswor
 
       if (authError) {
         if (authError.message.includes('Email not confirmed')) {
-          alert('Please verify your email first. Check your email and spam folder for verification link.');
-          return;
+          showToast('Please verify your email first. Check your email and spam folder for verification link.', 'error');
+        } else if (authError.message.includes('Invalid')) {
+          showToast('Invalid email or password. Please try again.', 'error');
+        } else {
+          showToast('Login failed. Please try again.', 'error');
         }
-        throw authError;
+        return;
       }
 
-      // Get user data from auth metadata
-      const userData = {
-        full_name: authData.user.user_metadata.full_name,
-        email: authData.user.email,
-        user_id: authData.user.user_metadata.user_id,
-        mobile: authData.user.user_metadata.mobile,
-        exam_type: authData.user.user_metadata.exam_type
-      };
+      // Get user data from your users table
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', formData.email)
+        .single();
 
+      if (userError) {
+        console.error('Error fetching user data:', userError);
+        showToast('Error loading user profile. Please try again.', 'error');
+        return;
+      }
+
+      showToast(`Welcome back, ${userData.full_name}!`, 'success');
       onLoginSuccess(userData);
       onClose();
       
@@ -72,7 +90,7 @@ const LoginPopup = ({ isOpen, onClose, onSwitchToSignup, onSwitchToForgotPasswor
       
     } catch (error) {
       console.error('Login error:', error);
-      alert('Invalid email or password. Please try again.');
+      showToast('Login failed. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -81,79 +99,89 @@ const LoginPopup = ({ isOpen, onClose, onSwitchToSignup, onSwitchToForgotPasswor
   if (!isOpen) return null;
 
   return (
-    <div className="login-overlay">
-      <div className="login-popup">
-        <button className="close-btn" onClick={onClose}>
-          <FaTimes />
-        </button>
-        
-        {/* Logo */}
-        <div className="popup-logo">
-          <img src="/logo.png" alt="ExamNation" />
-        </div>
-        
-        {/* Title */}
-        <h2 className="popup-title">Login</h2>
-        
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="login-form">
+    <>
+      <div className="login-overlay">
+        <div className="login-popup">
+          <button className="close-btn" onClick={onClose}>
+            <FaTimes />
+          </button>
           
-          {/* Email */}
-          <div className="form-group">
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className={errors.email ? 'error' : ''}
-            />
-            {errors.email && <span className="error-text">{errors.email}</span>}
+          {/* Logo */}
+          <div className="popup-logo">
+            <img src="/logo.png" alt="ExamNation" />
           </div>
+          
+          {/* Title */}
+          <h2 className="popup-title">Login</h2>
+          
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="login-form">
+            
+            {/* Email */}
+            <div className="form-group">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={errors.email ? 'error' : ''}
+              />
+              {errors.email && <span className="error-text">{errors.email}</span>}
+            </div>
 
-          {/* Password */}
-          <div className="form-group">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className={errors.password ? 'error' : ''}
-            />
-            {errors.password && <span className="error-text">{errors.password}</span>}
-          </div>
+            {/* Password */}
+            <div className="form-group">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className={errors.password ? 'error' : ''}
+              />
+              {errors.password && <span className="error-text">{errors.password}</span>}
+            </div>
 
-          {/* Login Button */}
-          <button 
-            type="submit" 
-            className="login-btn"
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : 'LOGIN'}
-          </button>
+            {/* Login Button */}
+            <button 
+              type="submit" 
+              className="login-btn"
+              disabled={loading}
+            >
+              {loading ? 'Logging in...' : 'LOGIN'}
+            </button>
 
-          {/* Create Account Button */}
-          <button 
-            type="button" 
-            className="create-account-btn"
-            onClick={onSwitchToSignup}
-          >
-            Create Account
-          </button>
+            {/* Create Account Button */}
+            <button 
+              type="button" 
+              className="create-account-btn"
+              onClick={onSwitchToSignup}
+            >
+              Create Account
+            </button>
 
-          {/* Forgot Password Link */}
-          <button 
-            type="button" 
-            className="forgot-password-link"
-            onClick={onSwitchToForgotPassword}
-          >
-            Forgot Password?
-          </button>
+            {/* Forgot Password Link */}
+            <button 
+              type="button" 
+              className="forgot-password-link"
+              onClick={onSwitchToForgotPassword}
+            >
+              Forgot Password?
+            </button>
 
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+
+      {/* Toast Notification */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.show}
+        onClose={hideToast}
+      />
+    </>
   );
 };
 
