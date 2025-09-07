@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaTimes, FaEye, FaEyeOff, FaCheckCircle, FaTimesCircle, FaEnvelope } from 'react-icons/fa';
+import { FaTimes, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle, FaEnvelope } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '/src/utils/supabase';
 import './AuthModal.css';
@@ -350,7 +350,7 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
                       className="password-toggle"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <FaEyeOff /> : <FaEye />}
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                   {errors.password && <span className="error-text">{errors.password}</span>}
@@ -443,7 +443,7 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
                       className="password-toggle"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <FaEyeOff /> : <FaEye />}
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                   {errors.password && <span className="error-text">{errors.password}</span>}
@@ -541,7 +541,7 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
                       className="password-toggle"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <FaEyeOff /> : <FaEye />}
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
                   {errors.password && <span className="error-text">{errors.password}</span>}
