@@ -25,7 +25,7 @@ const SupportUs = () => {
         <div className="qr-section">
           <div className="qr-container">
             <img 
-              src="/public/qrcode.png" 
+              src="/qrcode.png" 
               alt="Donation QR Code" 
               className="qr-code"
             />
