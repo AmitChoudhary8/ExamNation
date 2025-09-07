@@ -102,7 +102,7 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
         email: formData.email,
         password: formData.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: formData.fullName,
             mobile: formData.mobile,
