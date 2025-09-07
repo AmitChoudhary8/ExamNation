@@ -185,7 +185,7 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
         email: formData.email,
         password: formData.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             user_id: userId.toString(),
             full_name: formData.fullName,
