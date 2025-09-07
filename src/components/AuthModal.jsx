@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaEye, FaEyeOff, FaCheckCircle, FaTimesCircle, FaEnvelope } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../supabase';
+import { supabase } from '../utils/supabase';
 import './AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitchToForgotPassword, onLoginSuccess }) => {
@@ -44,7 +44,7 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
         </div>
         <div className="toast-message">{toast.message}</div>
         <button className="toast-close" onClick={() => setToast({ show: false, message: '', type: '' })}>
-          ×
+          &times;
         </button>
       </div>
     );
@@ -169,7 +169,6 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
       setLoading(false);
     }
   };
-
   // Signup Handler
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -552,4 +551,73 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
                   <input
                     type="password"
                     name="confirmPassword"
-                    plac
+                    placeholder="Confirm New Password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className={errors.confirmPassword ? 'error' : ''}
+                  />
+                  {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
+                </div>
+
+                <button type="submit" className="auth-btn primary" disabled={loading}>
+                  {loading ? 'Updating...' : 'Update Password'}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Email Sent Confirmation */}
+          {mode === 'emailSent' && (
+            <div className="auth-content verification-screen">
+              <div className="verification-icon">
+                <FaEnvelope size={60} />
+              </div>
+              
+              <h2 className="verification-title">Verify your Email</h2>
+              
+              <p className="verification-description">
+                Account activation link has been sent to the e-mail address you provided.
+              </p>
+              
+              <div className="email-illustration">
+                <div className="email-box">
+                  <div className="email-checkmark">✓</div>
+                </div>
+              </div>
+              
+              <button className="resend-btn" onClick={handleResendEmail}>
+                Didn't get the email? Send it again
+              </button>
+              
+              <button className="auth-btn secondary" onClick={() => { setMode('signup'); resetForm(); }}>
+                Back to Signup
+              </button>
+              
+              <button className="auth-btn secondary" onClick={() => { setMode('login'); resetForm(); }}>
+                Return to Login
+              </button>
+            </div>
+          )}
+
+          {/* Debug Info Panel */}
+          {debugInfo && (
+            <div className="debug-panel">
+              <details>
+                <summary>Debug Info</summary>
+                <pre className="debug-text">{debugInfo}</pre>
+                <button onClick={() => setDebugInfo('')} className="clear-debug-btn">
+                  Clear Debug
+                </button>
+              </details>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Toast Notification */}
+      <ToastNotification />
+    </>
+  );
+};
+
+export default AuthModal;
