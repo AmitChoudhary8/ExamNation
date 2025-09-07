@@ -6,6 +6,8 @@ import DownloadPDF from './pages/DownloadPDF';
 import Magazines from './pages/Magazines';
 import Calendar from './pages/Calendar';
 import Request from './pages/Request';
+import TermsAndConditions from './pages/TermsAndConditions';
+
 import Footer from './components/Footer';
 // Add this import
 import SupportUs from './pages/SupportUs';
@@ -25,6 +27,7 @@ function App() {
             <Route path="/magazines" element={<Magazines />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/request" element={<Request />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="/support-us" element={<SupportUs />} />
           </Routes>
         </main>
