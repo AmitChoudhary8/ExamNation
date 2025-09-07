@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBars, FaUserCircle } from 'react-icons/fa';
-import SignupPopup from './SignupPopup';
-import LoginPopup from './LoginPopup';
+import AuthModal from './AuthModal';
 import './Header.css';
 
 const examCategories = [
@@ -25,8 +24,7 @@ const menuItems = [
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
@@ -35,28 +33,14 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       setIsLoggedIn(false);
       setUserData(null);
     } else {
-      setShowLogin(true);
+      setShowAuthModal(true);
     }
   };
 
   const handleLoginSuccess = (user) => {
     setIsLoggedIn(true);
     setUserData(user);
-  };
-
-  const handleSwitchToSignup = () => {
-    setShowLogin(false);
-    setShowSignup(true);
-  };
-
-  const handleSwitchToLogin = () => {
-    setShowSignup(false);
-    setShowLogin(true);
-  };
-
-  const handleForgotPassword = () => {
-    setShowLogin(false);
-    navigate('/forgotpassword');
+    setShowAuthModal(false);
   };
 
   return (
@@ -117,20 +101,11 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
         )}
       </header>
 
-      {/* Login Popup */}
-      <LoginPopup 
-        isOpen={showLogin}
-        onClose={() => setShowLogin(false)}
-        onSwitchToSignup={handleSwitchToSignup}
-        onSwitchToForgotPassword={handleForgotPassword}
+      {/* New AuthModal */}
+      <AuthModal 
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
         onLoginSuccess={handleLoginSuccess}
-      />
-
-      {/* Signup Popup */}
-      <SignupPopup 
-        isOpen={showSignup}
-        onClose={() => setShowSignup(false)}
-        onSwitchToLogin={handleSwitchToLogin}
       />
     </>
   );
