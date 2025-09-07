@@ -6,9 +6,7 @@ import DownloadPDF from './pages/DownloadPDF';
 import Magazines from './pages/Magazines';
 import Calendar from './pages/Calendar';
 import Request from './pages/Request';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import AuthCallback from './pages/AuthCallback'; 
+import AuthCallback from './pages/AuthCallback';
 import Footer from './components/Footer';
 import './App.css';
 
@@ -26,8 +24,6 @@ function App() {
             <Route path="/magazines" element={<Magazines />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/request" element={<Request />} />
-            <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
           </Routes>
         </main>
