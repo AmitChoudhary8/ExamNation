@@ -7,6 +7,8 @@ import Magazines from './pages/Magazines';
 import Calendar from './pages/Calendar';
 import Request from './pages/Request';
 import Footer from './components/Footer';
+// Add this import
+import SupportUs from './pages/SupportUs';
 import './App.css';
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
             <Route path="/magazines" element={<Magazines />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/request" element={<Request />} />
+            <Route path="/support-us" element={<SupportUs />} />
           </Routes>
         </main>
         <Footer />
