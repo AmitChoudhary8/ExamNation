@@ -4,10 +4,10 @@ import { FaInstagram, FaTelegramPlane, FaWhatsapp, FaEnvelope } from 'react-icon
 import './Footer.css';
 
 const socials = [
-  { icon:<FaInstagram/>, url:'https://instagram.com', color:'#E4405F' },
+  { icon:<FaInstagram/>, url:'https://www.instagram.com/amit_sihag_08', color:'#E4405F' },
   { icon:<FaTelegramPlane/>, url:'https://telegram.org', color:'#0088CC' },
-  { icon:<FaWhatsapp/>, url:'https://whatsapp.com', color:'#25D366' },
-  { icon:<FaEnvelope/>, url:'mailto:contact@examnation.com', color:'#D44638' }
+  { icon:<FaWhatsapp/>, url:'https://whatsapp.com/channel/0029VbAiJJH5Ui2OETD17z2Y', color:'#25D366' },
+  { icon:<FaEnvelope/>, url:'mailto:imfo.amitsihag@gmail.com', color:'#D44638' }
 ];
 const links = [
   {name:"About Website", path:'/about-us'},
@@ -20,7 +20,7 @@ const Footer = () => (
   <footer className="footer">
     <div className="container footer-content">
       <div className="footer-left">
-        <p>Founded by [Your Name/Org]</p>
+        <p>Founded by Amit Choudhary</p>
       </div>
       <div className="footer-right">
         {socials.map((s,i)=>(
@@ -39,7 +39,7 @@ const Footer = () => (
       ))}
     </div>
     <div className="container copyright">
-      <p>&copy; 2024 ExamNation. All your reserved.</p>
+      <p>&copy; © 2025 ExamNation. All your rights reserved.</p>
     </div>
   </footer>
 );
