@@ -3,13 +3,13 @@ import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { 
   FaBars, 
   FaTimes, 
-  FiEdit, 
-  FiBookOpen, 
-  FiCalendar, 
-  FiSend, 
-  FiUsers,
-  FiLogOut,
-  FiUser
+  FaEdit,        // ✅ Use FaEdit from FontAwesome (available)
+  FaBookOpen,    // ✅ Use Fa icons from FontAwesome 
+  FaCalendarAlt, // ✅ FaCalendarAlt instead of FiCalendar
+  FaPaperPlane,  // ✅ FaPaperPlane instead of FiSend
+  FaUsers,
+  FaSignOutAlt,  // ✅ FaSignOutAlt instead of FiLogOut
+  FaUser
 } from 'react-icons/fa';
 import './AdminDashboard.css';
 
@@ -22,45 +22,44 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check if we're on the main dashboard or a sub-page
   const isMainDashboard = location.pathname === '/AdminDash';
 
-  // Menu items for sidebar and main dashboard
+  // ✅ Updated menu items with FontAwesome icons
   const menuItems = [
     {
       title: 'Manage PDFs',
       path: '/AdminDash/managepdf',
-      icon: <FiEdit size={20} />,
+      icon: <FaEdit size={20} />,                    // ✅ Using FaEdit
       description: 'Upload, edit, and organize PDF study materials'
     },
     {
       title: 'Manage Magazines',
       path: '/AdminDash/managemagazines',
-      icon: <FiBookOpen size={20} />,
+      icon: <FaBookOpen size={20} />,                // ✅ Using FaBookOpen
       description: 'Manage current affairs magazines and publications'
     },
     {
       title: 'Manage Calendar',
       path: '/AdminDash/managecalendar',
-      icon: <FiCalendar size={20} />,
+      icon: <FaCalendarAlt size={20} />,             // ✅ Using FaCalendarAlt
       description: 'Update exam dates and important notifications'
     },
     {
       title: 'Manage Requests',
       path: '/AdminDash/managerequests',
-      icon: <FiSend size={20} />,
+      icon: <FaPaperPlane size={20} />,              // ✅ Using FaPaperPlane
       description: 'Handle user requests and support tickets'
     },
     {
       title: 'Manage Blogs',
       path: '/AdminDash/manageblogs',
-      icon: <FiEdit size={20} />,
+      icon: <FaEdit size={20} />,                    // ✅ Using FaEdit
       description: 'Create, edit, and publish blog posts'
     },
     {
       title: 'User Management',
       path: '/AdminDash/usermanagement',
-      icon: <FiUsers size={20} />,
+      icon: <FaUsers size={20} />,                   // ✅ Using FaUsers
       description: 'Manage registered users and their permissions'
     }
   ];
@@ -73,24 +72,22 @@ const AdminDashboard = () => {
     if (adminToken && loginTime) {
       const currentTime = new Date().getTime();
       const timeDifference = currentTime - parseInt(loginTime);
-      const twoHours = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+      const twoHours = 2 * 60 * 60 * 1000;
       
       if (timeDifference < twoHours) {
         setIsLoggedIn(true);
       } else {
-        // Auto logout after 2 hours
         handleLogout();
       }
     }
   }, []);
 
-  // Auto logout timer
   useEffect(() => {
     if (isLoggedIn) {
       const timer = setTimeout(() => {
         handleLogout();
         alert('Session expired. Please login again.');
-      }, 2 * 60 * 60 * 1000); // 2 hours
+      }, 2 * 60 * 60 * 1000);
 
       return () => clearTimeout(timer);
     }
@@ -101,7 +98,6 @@ const AdminDashboard = () => {
     setLoading(true);
     setLoginError('');
 
-    // ✅ Updated to use Vite environment variables
     const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || 'admin';
     const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
 
@@ -137,7 +133,6 @@ const AdminDashboard = () => {
     });
   };
 
-  // If not logged in, show login form
   if (!isLoggedIn) {
     return (
       <div className="admin-login-container">
@@ -183,7 +178,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      {/* Header */}
       <header className="admin-header">
         <div className="header-left">
           <button 
@@ -203,17 +197,16 @@ const AdminDashboard = () => {
         
         <div className="header-right">
           <div className="admin-user-info">
-            <FiUser size={16} />
+            <FaUser size={16} />                    {/* ✅ Using FaUser */}
             <span>Admin</span>
           </div>
           <button className="logout-btn" onClick={handleLogout}>
-            <FiLogOut size={16} />
+            <FaSignOutAlt size={16} />              {/* ✅ Using FaSignOutAlt */}
             Logout
           </button>
         </div>
       </header>
 
-      {/* ✅ Fixed: Changed from <sidebar> to <aside> */}
       <aside className={`admin-sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-header">
           <h3>Management</h3>
@@ -240,7 +233,6 @@ const AdminDashboard = () => {
         </nav>
       </aside>
 
-      {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div 
           className="sidebar-overlay"
@@ -248,7 +240,6 @@ const AdminDashboard = () => {
         ></div>
       )}
 
-      {/* Main Content */}
       <main className="admin-main">
         {isMainDashboard ? (
           <div className="dashboard-content">
