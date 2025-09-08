@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle, FaEnvelope } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '/src/utils/supabase';
+import { supabase } from '/src/utils/supabase'; // ✅ Fixed import path
 import './AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitchToForgotPassword, onLoginSuccess }) => {
-  const [mode, setMode] = useState('login'); // 'login', 'signup', 'forgot', 'reset', 'emailSent', 'emailVerified'
+  const [mode, setMode] = useState('login');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');
@@ -54,7 +54,6 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
     setToast({ show: true, message, type });
   };
 
-  // Generate unique 9-digit user ID
   const generateUserId = async () => {
     const length = 9;
     let userId = '';
@@ -115,7 +114,6 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
     }));
   };
 
-  // ✅ Updated Login Handler with Persistence
   const handleLogin = async (e) => {
     e.preventDefault();
     setDebugInfo('🔄 Starting login process...');
@@ -144,7 +142,6 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
         return;
       }
 
-      // Get user data from users table
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
@@ -160,7 +157,6 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
       setDebugInfo(prev => prev + '\n✅ Login successful!');
       showToast(`Welcome back, ${userData.full_name}!`, 'success');
       
-      // ✅ Call parent's login success handler (which handles persistence)
       onLoginSuccess(userData);
       
     } catch (error) {
@@ -171,8 +167,6 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
     }
   };
 
-  // Continue with rest of component...
-  // ✅ Updated Signup Handler
   const handleSignup = async (e) => {
     e.preventDefault();
     setDebugInfo('🔄 Starting signup process...');
@@ -225,7 +219,6 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
     }
   };
 
-  // Forgot Password Handler
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     
@@ -250,7 +243,6 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
     }
   };
 
-  // Reset Password Handler
   const handleResetPassword = async (e) => {
     e.preventDefault();
     
@@ -320,7 +312,7 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
             <img src="/logo.png" alt="ExamNation" />
           </div>
           
-          {/* Login Form */}
+          {/* ✅ Login Form - Complete */}
           {mode === 'login' && (
             <div className="auth-content">
               <h2 className="auth-title">Login to Your Account</h2>
@@ -374,8 +366,186 @@ const AuthModal = ({ isOpen, onClose, onSwitchToLogin, onSwitchToSignup, onSwitc
             </div>
           )}
 
-          {/* Rest of the forms remain same... */}
-          {/* [Include all other forms like signup, forgot, reset, emailSent as they were] */}
+          {/* ✅ Signup Form - Complete */}
+          {mode === 'signup' && (
+            <div className="auth-content">
+              <h2 className="auth-title">Create Your Account</h2>
+              
+              <form onSubmit={handleSignup} className="auth-form">
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="fullName"
+                    placeholder="Full Name"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    className={errors.fullName ? 'error' : ''}
+                  />
+                  {errors.fullName && <span className="error-text">{errors.fullName}</span>}
+                </div>
+
+                <div className="form-group">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={errors.email ? 'error' : ''}
+                  />
+                  {errors.email && <span className="error-text">{errors.email}</span>}
+                </div>
+
+                <div className="form-group">
+                  <input
+                    type="tel"
+                    name="mobile"
+                    placeholder="Mobile Number"
+                    value={formData.mobile}
+                    onChange={handleInputChange}
+                    className={errors.mobile ? 'error' : ''}
+                  />
+                  {errors.mobile && <span className="error-text">{errors.mobile}</span>}
+                </div>
+
+                <div className="form-group">
+                  <select
+                    name="examType"
+                    value={formData.examType}
+                    onChange={handleInputChange}
+                    className={errors.examType ? 'error' : ''}
+                  >
+                    <option value="">Select Exam Type</option>
+                    {examTypes.map((type, index) => (
+                      <option key={index} value={type}>{type}</option>
+                    ))}
+                  </select>
+                  {errors.examType && <span className="error-text">{errors.examType}</span>}
+                </div>
+
+                <div className="form-group">
+                  <div className="password-field">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className={errors.password ? 'error' : ''}
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                  {errors.password && <span className="error-text">{errors.password}</span>}
+                </div>
+
+                <div className="form-group">
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Re-enter Password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className={errors.confirmPassword ? 'error' : ''}
+                  />
+                  {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
+                </div>
+
+                <div className="form-group checkbox-group">
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      name="agreeToTerms"
+                      checked={formData.agreeToTerms}
+                      onChange={handleInputChange}
+                    />
+                    <span className="checkmark"></span>
+                    I accept the{' '}
+                    <Link to="/terms" target="_blank" className="terms-link">
+                      terms and conditions
+                    </Link>
+                  </label>
+                  {errors.agreeToTerms && <span className="error-text">{errors.agreeToTerms}</span>}
+                </div>
+
+                <button type="submit" className="auth-btn primary" disabled={loading}>
+                  {loading ? 'Creating Account...' : 'SIGN UP'}
+                </button>
+
+                <button type="button" className="auth-btn secondary" onClick={() => setMode('login')}>
+                  Return to Login
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* ✅ Forgot Password Form - Complete */}
+          {mode === 'forgot' && (
+            <div className="auth-content">
+              <h2 className="auth-title">Reset Password</h2>
+              <p className="auth-subtitle">Enter your email address and we'll send you a link to reset your password.</p>
+              
+              <form onSubmit={handleForgotPassword} className="auth-form">
+                <div className="form-group">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={errors.email ? 'error' : ''}
+                  />
+                  {errors.email && <span className="error-text">{errors.email}</span>}
+                </div>
+
+                <button type="submit" className="auth-btn primary" disabled={loading}>
+                  {loading ? 'Sending...' : 'Send Reset Link'}
+                </button>
+
+                <button type="button" className="auth-btn secondary" onClick={() => setMode('login')}>
+                  Back to Login
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* ✅ Email Sent Confirmation - Complete */}
+          {mode === 'emailSent' && (
+            <div className="auth-content verification-screen">
+              <div className="verification-icon">
+                <FaEnvelope size={60} />
+              </div>
+              
+              <h2 className="verification-title">Verify your Email</h2>
+              
+              <p className="verification-description">
+                Account activation link has been sent to the e-mail address you provided.
+              </p>
+              
+              <div className="email-illustration">
+                <div className="email-box">
+                  <div className="email-checkmark">✓</div>
+                </div>
+              </div>
+              
+              <button className="resend-btn" onClick={handleResendEmail}>
+                Didn't get the email? Send it again
+              </button>
+              
+              <button className="auth-btn secondary" onClick={() => { setMode('signup'); resetForm(); }}>
+                Back to Signup
+              </button>
+              
+              <button className="auth-btn secondary" onClick={() => { setMode('login'); resetForm(); }}>
+                Return to Login
+              </button>
+            </div>
+          )}
 
           {/* Debug Info Panel */}
           {debugInfo && (
