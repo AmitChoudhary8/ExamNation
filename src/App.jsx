@@ -7,7 +7,8 @@ import Magazines from './pages/Magazines';
 import Calendar from './pages/Calendar';
 import Request from './pages/Request';
 import TermsAndConditions from './pages/TermsAndConditions';
-
+import ContactUs from './pages/ContactUs';
+import AboutUs from './pages/AboutUs';
 import Footer from './components/Footer';
 // Add this import
 import SupportUs from './pages/SupportUs';
@@ -29,6 +30,8 @@ function App() {
             <Route path="/request" element={<Request />} />
             <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="/support-us" element={<SupportUs />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/about-us" element={<AboutUs />} />
           </Routes>
         </main>
         <Footer />
