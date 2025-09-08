@@ -12,7 +12,7 @@ import AboutUs from './pages/AboutUs';
 import Footer from './components/Footer';
 // Add this import
 import SupportUs from './pages/SupportUs';
-import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminDashboard from '/src/pages/admin/AdminDashboard';
 import './App.css';
 
 function App() {
