@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { 
   FaBars, 
   FaTimes, 
-  FiFileText, 
+  FiEdit, 
   FiBookOpen, 
   FiCalendar, 
   FiSend, 
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
     {
       title: 'Manage PDFs',
       path: '/AdminDash/managepdf',
-      icon: <FiFileText size={20} />,
+      icon: <FiEdit size={20} />,
       description: 'Upload, edit, and organize PDF study materials'
     },
     {
