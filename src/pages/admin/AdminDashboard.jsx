@@ -7,7 +7,7 @@ import {
   FiBookOpen, 
   FiCalendar, 
   FiSend, 
-  FiEdit, 
+  FiClipboard, 
   FiUsers,
   FiLogOut,
   FiUser
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
     {
       title: 'Manage PDFs',
       path: '/AdminDash/managepdf',
-      icon: <FiEdit size={20} />,
+      icon: <FiClipboard size={20} />,
       description: 'Upload, edit, and organize PDF study materials'
     },
     {
