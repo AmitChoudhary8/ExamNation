@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
@@ -16,11 +16,65 @@ import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+  // ✅ Check localStorage on app initialization
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem('examNationUser');
+      const storedLoginStatus = localStorage.getItem('examNationLoggedIn');
+      
+      if (storedUser && storedLoginStatus === 'true') {
+        const userInfo = JSON.parse(storedUser);
+        setUserData(userInfo);
+        setIsLoggedIn(true);
+      }
+    } catch (error) {
+      console.error('Error restoring login state:', error);
+      // Clear corrupted data
+      localStorage.removeItem('examNationUser');
+      localStorage.removeItem('examNationLoggedIn');
+    }
+  }, []);
+
+  // ✅ Handle login success - called from Header
+  const handleLoginSuccess = (user) => {
+    setIsLoggedIn(true);
+    setUserData(user);
+    
+    // Save to localStorage
+    try {
+      localStorage.setItem('examNationUser', JSON.stringify(user));
+      localStorage.setItem('examNationLoggedIn', 'true');
+    } catch (error) {
+      console.error('Error saving login state:', error);
+    }
+  };
+
+  // ✅ Handle logout - called from Header
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserData(null);
+    
+    // Clear localStorage
+    try {
+      localStorage.removeItem('examNationUser');
+      localStorage.removeItem('examNationLoggedIn');
+    } catch (error) {
+      console.error('Error clearing login state:', error);
+    }
+  };
 
   return (
     <Router>
       <div className="App">
-        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        <Header 
+          isLoggedIn={isLoggedIn} 
+          setIsLoggedIn={setIsLoggedIn}
+          userData={userData}
+          onLoginSuccess={handleLoginSuccess}
+          onLogout={handleLogout}
+        />
         <main className="main-content">
           <Routes>
             <Route path="/" element={<HomePage />} />

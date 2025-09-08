@@ -34,29 +34,30 @@ const menuItems = [
   { name: 'Sitemap', path: '/sitemap', icon: <FiMap size={18} /> }
 ];
 
-const Header = ({ isLoggedIn, setIsLoggedIn }) => {
+const Header = ({ isLoggedIn, setIsLoggedIn, userData, onLoginSuccess, onLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   // Check if current page is homepage
   const isHomePage = location.pathname === '/';
 
+  // ✅ Handle auth button click
   const handleAuthClick = () => {
     if (isLoggedIn) {
-      setIsLoggedIn(false);
-      setUserData(null);
+      // Call parent logout handler
+      onLogout();
     } else {
       setShowAuthModal(true);
     }
   };
 
+  // ✅ Handle login success from AuthModal
   const handleLoginSuccess = (user) => {
-    setIsLoggedIn(true);
-    setUserData(user);
     setShowAuthModal(false);
+    // Call parent login success handler
+    onLoginSuccess(user);
   };
 
   return (
