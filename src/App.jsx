@@ -10,16 +10,16 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
 import Footer from './components/Footer';
-// Add this import
 import SupportUs from './pages/SupportUs';
-import AdminDashboard from '/src/pages/admin/AdminDashboard.jsx';
+// ✅ Fixed import path - relative instead of absolute
+import AdminDashboard from './pages/admin/AdminDashboard';
 import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
 
-  // ✅ Check localStorage on app initialization
+  // Check localStorage on app initialization
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('examNationUser');
@@ -32,18 +32,15 @@ function App() {
       }
     } catch (error) {
       console.error('Error restoring login state:', error);
-      // Clear corrupted data
       localStorage.removeItem('examNationUser');
       localStorage.removeItem('examNationLoggedIn');
     }
   }, []);
 
-  // ✅ Handle login success - called from Header
   const handleLoginSuccess = (user) => {
     setIsLoggedIn(true);
     setUserData(user);
     
-    // Save to localStorage
     try {
       localStorage.setItem('examNationUser', JSON.stringify(user));
       localStorage.setItem('examNationLoggedIn', 'true');
@@ -52,12 +49,10 @@ function App() {
     }
   };
 
-  // ✅ Handle logout - called from Header
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserData(null);
     
-    // Clear localStorage
     try {
       localStorage.removeItem('examNationUser');
       localStorage.removeItem('examNationLoggedIn');
@@ -87,6 +82,7 @@ function App() {
             <Route path="/support-us" element={<SupportUs />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/about-us" element={<AboutUs />} />
+            {/* ✅ Admin routes */}
             <Route path="/AdminDash/*" element={<AdminDashboard />} />
           </Routes>
         </main>
