@@ -8,7 +8,7 @@ export const getPDFs = async () => {
     .order('created_at', { ascending: false });
   
   if (error) throw error;
-  return data;
+  return data || [];
 };
 
 // Get PDF by title
@@ -16,7 +16,7 @@ export const getPDFByTitle = async (title) => {
   const { data, error } = await supabase
     .from('pdfs')
     .select('*')
-    .ilike('title', title)
+    .ilike('title', `%${title}%`)
     .single();
   
   if (error) throw error;
@@ -27,7 +27,11 @@ export const getPDFByTitle = async (title) => {
 export const createPDF = async (pdfData) => {
   const { data, error } = await supabase
     .from('pdfs')
-    .insert([pdfData])
+    .insert([{
+      ...pdfData,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }])
     .select();
   
   if (error) throw error;
@@ -38,7 +42,10 @@ export const createPDF = async (pdfData) => {
 export const updatePDF = async (id, pdfData) => {
   const { data, error } = await supabase
     .from('pdfs')
-    .update({ ...pdfData, updated_at: new Date() })
+    .update({ 
+      ...pdfData, 
+      updated_at: new Date().toISOString()
+    })
     .eq('id', id)
     .select();
   
@@ -56,15 +63,15 @@ export const deletePDF = async (id) => {
   if (error) throw error;
 };
 
-// Toggle bookmark
-export const toggleBookmark = async (pdfId) => {
-  const user = supabase.auth.getUser();
-  if (!user) throw new Error('User not authenticated');
+// ✅ Fixed toggle bookmark with proper authentication
+export const toggleBookmark = async (pdfId, userId) => {
+  if (!userId) throw new Error('User not authenticated');
   
+  // Check if bookmark exists
   const { data: existing, error: checkError } = await supabase
     .from('bookmarks')
     .select('id')
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .eq('pdf_id', pdfId)
     .single();
   
@@ -81,29 +88,62 @@ export const toggleBookmark = async (pdfId) => {
     // Add bookmark
     const { error } = await supabase
       .from('bookmarks')
-      .insert([{ user_id: user.id, pdf_id: pdfId }]);
+      .insert([{ 
+        user_id: userId, 
+        pdf_id: pdfId,
+        created_at: new Date().toISOString()
+      }]);
     
     if (error) throw error;
     return true;
   }
 };
 
-// Rate PDF
-export const ratePDF = async (pdfId, rating) => {
-  const user = supabase.auth.getUser();
-  if (!user) throw new Error('User not authenticated');
+// ✅ Fixed rate PDF with user authentication and duplicate prevention
+export const ratePDF = async (pdfId, rating, userId) => {
+  if (!userId) throw new Error('User not authenticated');
   
-  // Insert or update rating
+  // Check if user has already rated
+  const { data: existingRating, error: checkError } = await supabase
+    .from('ratings')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('pdf_id', pdfId)
+    .single();
+  
+  if (existingRating) {
+    throw new Error('You have already rated this PDF');
+  }
+  
+  // Insert new rating
   const { error } = await supabase
     .from('ratings')
-    .upsert([
-      { user_id: user.id, pdf_id: pdfId, rating }
-    ]);
+    .insert([{
+      user_id: userId,
+      pdf_id: pdfId,
+      rating,
+      created_at: new Date().toISOString()
+    }]);
   
   if (error) throw error;
   
   // Update PDF average rating
   await updatePDFRating(pdfId);
+};
+
+// ✅ Get user's rating for a PDF
+export const getUserRating = async (pdfId, userId) => {
+  if (!userId) return null;
+  
+  const { data, error } = await supabase
+    .from('ratings')
+    .select('rating')
+    .eq('user_id', userId)
+    .eq('pdf_id', pdfId)
+    .single();
+  
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
 };
 
 // Update PDF average rating
