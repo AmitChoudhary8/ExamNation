@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { Link, useNavigate, useLocation, Outlet, Routes, Route } from 'react-router-dom';
 import { 
   FaBars, 
   FaTimes, 
-  FaEdit,        // ✅ Use FaEdit from FontAwesome (available)
-  FaBookOpen,    // ✅ Use Fa icons from FontAwesome 
-  FaCalendarAlt, // ✅ FaCalendarAlt instead of FiCalendar
-  FaPaperPlane,  // ✅ FaPaperPlane instead of FiSend
+  FaEdit,
+  FaBookOpen,
+  FaCalendarAlt,
+  FaPaperPlane,
   FaUsers,
-  FaSignOutAlt,  // ✅ FaSignOutAlt instead of FiLogOut
+  FaSignOutAlt,
   FaUser
 } from 'react-icons/fa';
 import ManagePDF from './ManagePDF';
@@ -19,81 +19,64 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
   const [loginError, setLoginError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // ✅ Added loading state
   const navigate = useNavigate();
   const location = useLocation();
 
   const isMainDashboard = location.pathname === '/AdminDash';
 
-  // ✅ Updated menu items with FontAwesome icons
+  // ✅ Menu items with only ManagePDF for now
   const menuItems = [
     {
       title: 'Manage PDFs',
       path: '/AdminDash/managepdf',
-      icon: <FaEdit size={20} />,                    // ✅ Using FaEdit
+      icon: <FaEdit size={20} />,
       description: 'Upload, edit, and organize PDF study materials'
-    },
-    {
-      title: 'Manage Magazines',
-      path: '/AdminDash/managemagazines',
-      icon: <FaBookOpen size={20} />,                // ✅ Using FaBookOpen
-      description: 'Manage current affairs magazines and publications'
-    },
-    {
-      title: 'Manage Calendar',
-      path: '/AdminDash/managecalendar',
-      icon: <FaCalendarAlt size={20} />,             // ✅ Using FaCalendarAlt
-      description: 'Update exam dates and important notifications'
-    },
-    {
-      title: 'Manage Requests',
-      path: '/AdminDash/managerequests',
-      icon: <FaPaperPlane size={20} />,              // ✅ Using FaPaperPlane
-      description: 'Handle user requests and support tickets'
-    },
-    {
-      title: 'Manage Blogs',
-      path: '/AdminDash/manageblogs',
-      icon: <FaEdit size={20} />,                    // ✅ Using FaEdit
-      description: 'Create, edit, and publish blog posts'
-    },
-    {
-      title: 'User Management',
-      path: '/AdminDash/usermanagement',
-      icon: <FaUsers size={20} />,                   // ✅ Using FaUsers
-      description: 'Manage registered users and their permissions'
     }
+    // Add other menu items later as you build them
   ];
 
-  // Check login status on component mount
+  // ✅ Fixed login state restoration
   useEffect(() => {
-    const adminToken = localStorage.getItem('adminToken');
-    const loginTime = localStorage.getItem('adminLoginTime');
-    
-    if (adminToken && loginTime) {
-      const currentTime = new Date().getTime();
-      const timeDifference = currentTime - parseInt(loginTime);
-      const twoHours = 2 * 60 * 60 * 1000;
+    const checkLoginStatus = () => {
+      const adminToken = localStorage.getItem('adminToken');
+      const loginTime = localStorage.getItem('adminLoginTime');
       
-      if (timeDifference < twoHours) {
-        setIsLoggedIn(true);
-      } else {
-        handleLogout();
+      if (adminToken && loginTime) {
+        const currentTime = new Date().getTime();
+        const timeDifference = currentTime - parseInt(loginTime);
+        const twoHours = 2 * 60 * 60 * 1000;
+        
+        if (timeDifference < twoHours) {
+          setIsLoggedIn(true);
+        } else {
+          // Auto logout if expired
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminLoginTime');
+          setIsLoggedIn(false);
+        }
       }
-    }
+      setLoading(false); // ✅ Set loading false after check
+    };
+
+    checkLoginStatus();
   }, []);
 
+  // ✅ Auto logout timer
   useEffect(() => {
+    let timer;
     if (isLoggedIn) {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         handleLogout();
         alert('Session expired. Please login again.');
       }, 2 * 60 * 60 * 1000);
-
-      return () => clearTimeout(timer);
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [isLoggedIn]);
 
+  // ✅ Improved login handler
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -110,6 +93,7 @@ const AdminDashboard = () => {
         
         setIsLoggedIn(true);
         setLoginForm({ username: '', password: '' });
+        navigate('/AdminDash'); // ✅ Redirect after login
       } else {
         setLoginError('Invalid username or password');
       }
@@ -124,6 +108,7 @@ const AdminDashboard = () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminLoginTime');
     setIsLoggedIn(false);
+    setSidebarOpen(false);
     navigate('/AdminDash');
   };
 
@@ -134,6 +119,16 @@ const AdminDashboard = () => {
     });
   };
 
+  // ✅ Show loading spinner while checking login status
+  if (loading) {
+    return (
+      <div className="admin-loading">
+        <div>Loading Admin Panel...</div>
+      </div>
+    );
+  }
+
+  // ✅ Login form (unchanged)
   if (!isLoggedIn) {
     return (
       <div className="admin-login-container">
@@ -152,6 +147,7 @@ const AdminDashboard = () => {
                 value={loginForm.username}
                 onChange={handleInputChange}
                 required
+                disabled={loading}
               />
             </div>
             
@@ -163,6 +159,7 @@ const AdminDashboard = () => {
                 value={loginForm.password}
                 onChange={handleInputChange}
                 required
+                disabled={loading}
               />
             </div>
             
@@ -176,7 +173,7 @@ const AdminDashboard = () => {
       </div>
     );
   }
-
+  // ✅ Main dashboard content (logged in state)
   return (
     <div className="admin-dashboard">
       <header className="admin-header">
@@ -198,11 +195,11 @@ const AdminDashboard = () => {
         
         <div className="header-right">
           <div className="admin-user-info">
-            <FaUser size={16} />                    {/* ✅ Using FaUser */}
+            <FaUser size={16} />
             <span>Admin</span>
           </div>
           <button className="logout-btn" onClick={handleLogout}>
-            <FaSignOutAlt size={16} />              {/* ✅ Using FaSignOutAlt */}
+            <FaSignOutAlt size={16} />
             Logout
           </button>
         </div>
@@ -266,7 +263,15 @@ const AdminDashboard = () => {
             </div>
           </div>
         ) : (
-          <Outlet />
+          <Routes>
+            <Route path="managepdf" element={<ManagePDF />} />
+            {/* Add other routes as you build them:
+            <Route path="managemagazines" element={<ManageMagazines />} />
+            <Route path="managecalendar" element={<ManageCalendar />} />
+            <Route path="managerequests" element={<ManageRequests />} />
+            <Route path="manageblogs" element={<ManageBlogs />} />
+            */}
+          </Routes>
         )}
       </main>
     </div>
