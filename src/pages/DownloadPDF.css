@@ -7,7 +7,7 @@
 .page-header {
   text-align: center;
   margin-bottom: 40px;
-  max-width: 800px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -22,8 +22,90 @@
 .page-header p {
   font-size: 1.1rem;
   color: #666;
-  margin: 0;
+  margin: 0 0 30px 0;
   line-height: 1.6;
+}
+
+/* ✅ New Search Section Styles */
+.search-section {
+  margin: 30px auto 20px;
+  max-width: 600px;
+}
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+  border-color: #4A90E2;
+  box-shadow: 0 4px 20px rgba(74, 144, 226, 0.2);
+}
+
+.search-input {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  outline: none;
+  background: transparent;
+  color: #333;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.search-btn {
+  position: absolute;
+  right: 50px;
+  background: #4A90E2;
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.search-btn:hover {
+  background: #357ABD;
+}
+
+.clear-search {
+  position: absolute;
+  right: 15px;
+  background: #6c757d;
+  border: none;
+  padding: 8px;
+  border-radius: 15px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.clear-search:hover {
+  background: #5a6268;
+}
+
+.search-info {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: left;
 }
 
 .pdf-grid {
@@ -45,19 +127,46 @@
   text-align: center;
   padding: 60px 20px;
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   margin: 40px auto;
   max-width: 500px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.no-results-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.no-results h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0 0 10px 0;
 }
 
 .no-results p {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #666;
-  margin: 0;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
 }
 
-/* Mobile Responsive */
+.clear-filters-btn {
+  background: #4A90E2;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-filters-btn:hover {
+  background: #357ABD;
+}
+
+/* ✅ Mobile Responsive */
 @media (max-width: 768px) {
   .download-pdf-page {
     padding: 80px 15px 30px;
@@ -65,6 +174,25 @@
   
   .page-header h1 {
     font-size: 2rem;
+  }
+  
+  .search-section {
+    max-width: 100%;
+  }
+  
+  .search-input {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+  
+  .search-btn {
+    right: 45px;
+    padding: 8px;
+  }
+  
+  .clear-search {
+    right: 12px;
+    padding: 6px;
   }
   
   .pdf-grid {
@@ -80,5 +208,9 @@
   
   .page-header p {
     font-size: 1rem;
+  }
+  
+  .search-input {
+    padding: 10px 12px;
   }
 }

@@ -11,7 +11,6 @@ import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
 import Footer from './components/Footer';
 import SupportUs from './pages/SupportUs';
-// ✅ Fixed import path - relative instead of absolute
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ManagePDF from './pages/admin/ManagePDF';
 import PDFDetails from './pages/PDFDetails';
@@ -20,6 +19,7 @@ import './App.css';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ Added loading state
 
   // Check localStorage on app initialization
   useEffect(() => {
@@ -36,6 +36,8 @@ function App() {
       console.error('Error restoring login state:', error);
       localStorage.removeItem('examNationUser');
       localStorage.removeItem('examNationLoggedIn');
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -63,6 +65,10 @@ function App() {
     }
   };
 
+  if (loading) {
+    return <div className="app-loading">Loading ExamNation...</div>;
+  }
+
   return (
     <Router>
       <div className="App">
@@ -76,8 +82,25 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/download-pdf" element={<DownloadPDF />} />
-            <Route path="/download-pdf/:title" element={<PDFDetails />} />
+            {/* ✅ PDF routes with authentication props */}
+            <Route 
+              path="/download-pdf" 
+              element={
+                <DownloadPDF 
+                  isLoggedIn={isLoggedIn}
+                  userData={userData}
+                />
+              } 
+            />
+            <Route 
+              path="/download-pdf/:title" 
+              element={
+                <PDFDetails 
+                  isLoggedIn={isLoggedIn}
+                  userData={userData}
+                />
+              } 
+            />
             <Route path="/magazines" element={<Magazines />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/request" element={<Request />} />
@@ -85,7 +108,6 @@ function App() {
             <Route path="/support-us" element={<SupportUs />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/about-us" element={<AboutUs />} />
-            {/* ✅ Admin routes */}
             <Route path="/AdminDash/*" element={<AdminDashboard />} />
             <Route path="/AdminDash/managepdf" element={<ManagePDF />} />
           </Routes>

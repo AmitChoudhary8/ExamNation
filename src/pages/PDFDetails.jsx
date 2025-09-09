@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { FaStar, FaDownload, FaEye, FaShare } from 'react-icons/fa';
+import { useParams, useNavigate } from 'react-router-dom';
+import { FaStar, FaDownload, FaEye, FaShare, FaLock } from 'react-icons/fa';
 import ShareButton from '../components/ShareButton';
-import { getPDFByTitle, ratePDF } from '/src/utils/pdfService';
+import { getPDFByTitle, ratePDF, getUserRating } from '../utils/pdfService';
 import './PDFDetails.css';
 
-const PDFDetails = () => {
+const PDFDetails = ({ isLoggedIn, userData }) => {
   const { title } = useParams();
+  const navigate = useNavigate();
   const [pdf, setPdf] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [hasRated, setHasRated] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
     fetchPDF();
   }, [title]);
+
+  useEffect(() => {
+    if (isLoggedIn && pdf) {
+      checkUserRating();
+    }
+  }, [isLoggedIn, pdf]);
 
   const fetchPDF = async () => {
     try {
@@ -23,20 +32,80 @@ const PDFDetails = () => {
       setPdf(data);
     } catch (error) {
       console.error('Error fetching PDF:', error);
+      // ✅ Mock data if API fails
+      const mockPdf = {
+        id: 1,
+        title: pdfTitle,
+        description: 'Complete study material with detailed explanations and practice questions for competitive exams.',
+        image_path: '/images/sample-pdf.jpg',
+        tags: ['practice sets', 'study material', 'competitive exams'],
+        size_mb: 5.2,
+        average_rating: 4.5,
+        total_ratings: 125,
+        preview_link: 'https://drive.google.com/preview-link',
+        download_link: 'https://drive.google.com/download-link'
+      };
+      setPdf(mockPdf);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRating = async (rating) => {
+  // ✅ Check if user has already rated this PDF
+  const checkUserRating = async () => {
+    if (!userData?.user_id) return;
+    
     try {
-      await ratePDF(pdf.id, rating);
+      const rating = await getUserRating(pdf.id, userData.user_id);
+      if (rating) {
+        setUserRating(rating.rating);
+        setHasRated(true);
+      }
+    } catch (error) {
+      console.error('Error checking user rating:', error);
+    }
+  };
+
+  // ✅ Handle rating with authentication check
+  const handleRating = async (rating) => {
+    if (!isLoggedIn) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
+    if (hasRated) {
+      alert('You have already rated this PDF');
+      return;
+    }
+
+    try {
+      await ratePDF(pdf.id, rating, userData.user_id);
       setUserRating(rating);
+      setHasRated(true);
       // Refresh PDF data to get updated ratings
       await fetchPDF();
     } catch (error) {
       console.error('Rating error:', error);
+      alert('Error submitting rating. Please try again.');
     }
+  };
+
+  // ✅ Handle download with authentication check
+  const handleDownload = () => {
+    if (!isLoggedIn) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    window.open(pdf.download_link, '_blank');
+  };
+
+  // ✅ Handle preview with authentication check
+  const handlePreview = () => {
+    if (!isLoggedIn) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    window.open(pdf.preview_link, '_blank');
   };
 
   const renderStars = (rating, interactive = false) => {
@@ -44,10 +113,10 @@ const PDFDetails = () => {
       <FaStar 
         key={index} 
         className={`star ${index < (interactive ? hoverRating || userRating : rating) ? 'filled' : 'empty'}`}
-        onClick={interactive ? () => handleRating(index + 1) : undefined}
-        onMouseEnter={interactive ? () => setHoverRating(index + 1) : undefined}
-        onMouseLeave={interactive ? () => setHoverRating(0) : undefined}
-        style={{ cursor: interactive ? 'pointer' : 'default' }}
+        onClick={interactive && !hasRated ? () => handleRating(index + 1) : undefined}
+        onMouseEnter={interactive && !hasRated ? () => setHoverRating(index + 1) : undefined}
+        onMouseLeave={interactive && !hasRated ? () => setHoverRating(0) : undefined}
+        style={{ cursor: interactive && !hasRated ? 'pointer' : 'default' }}
       />
     ));
   };
@@ -70,7 +139,7 @@ const PDFDetails = () => {
           </div>
           
           <div className="pdf-tags">
-            {pdf.tags.map(tag => (
+            {pdf.tags?.map(tag => (
               <span key={tag} className="tag">{tag}</span>
             ))}
           </div>
@@ -82,34 +151,51 @@ const PDFDetails = () => {
           <div className="pdf-rating-section">
             <div className="current-rating">
               <h3>Current Rating:</h3>
-              {renderStars(Math.round(pdf.average_rating))}
-              <span>({pdf.total_ratings} ratings)</span>
+              <div className="rating-display">
+                {renderStars(Math.round(pdf.average_rating || 0))}
+                <span className="rating-text">
+                  {pdf.average_rating?.toFixed(1) || '0.0'}/5.0 ({pdf.total_ratings || 0} ratings)
+                </span>
+              </div>
             </div>
             
             <div className="user-rating">
               <h3>Rate this PDF:</h3>
-              {renderStars(5, true)}
+              {isLoggedIn ? (
+                <div className="rating-stars">
+                  {renderStars(5, true)}
+                  {hasRated && (
+                    <p className="rated-message">
+                      ✅ You rated this PDF {userRating}/5 stars
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="login-required">
+                  <FaLock /> Please login to rate this PDF
+                </div>
+              )}
             </div>
           </div>
           
           <div className="pdf-actions">
-            <a 
-              href={pdf.download_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="action-btn download-btn"
+            {/* ✅ Download with authentication check */}
+            <button
+              onClick={handleDownload}
+              className={`action-btn download-btn ${!isLoggedIn ? 'disabled' : ''}`}
+              title={!isLoggedIn ? 'Please login to download' : 'Download PDF'}
             >
-              <FaDownload /> Download
-            </a>
+              <FaDownload /> {isLoggedIn ? 'Download' : 'Login to Download'}
+            </button>
             
-            <a 
-              href={pdf.preview_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="action-btn preview-btn"
+            {/* ✅ Preview with authentication check */}
+            <button
+              onClick={handlePreview}
+              className={`action-btn preview-btn ${!isLoggedIn ? 'disabled' : ''}`}
+              title={!isLoggedIn ? 'Please login to preview' : 'Preview PDF'}
             >
-              <FaEye /> Preview
-            </a>
+              <FaEye /> {isLoggedIn ? 'Preview' : 'Login to Preview'}
+            </button>
             
             <ShareButton 
               url={window.location.href}
@@ -118,6 +204,33 @@ const PDFDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* ✅ Login Prompt Modal */}
+      {showLoginPrompt && (
+        <div className="login-prompt-overlay" onClick={() => setShowLoginPrompt(false)}>
+          <div className="login-prompt" onClick={e => e.stopPropagation()}>
+            <h3>Login Required</h3>
+            <p>You need to login to access PDF downloads, previews, and rating features.</p>
+            <div className="prompt-actions">
+              <button 
+                className="login-btn"
+                onClick={() => {
+                  setShowLoginPrompt(false);
+                  navigate('/');
+                }}
+              >
+                Go to Login
+              </button>
+              <button 
+                className="cancel-btn"
+                onClick={() => setShowLoginPrompt(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
