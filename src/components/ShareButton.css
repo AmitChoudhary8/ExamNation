@@ -1,0 +1,55 @@
+.share-btn {
+  background: none;
+  border: 1px solid #ddd;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+}
+
+.share-btn:hover {
+  background: #f8f9fa;
+  border-color: #4A90E2;
+  color: #4A90E2;
+  transform: translateY(-1px);
+}
+
+.share-btn.copied {
+  background: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.share-btn.copied:hover {
+  background: #218838;
+  border-color: #218838;
+}
+
+/* When used as action button */
+.action-btn.share-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  min-width: auto;
+  height: auto;
+}
+
+.action-btn.share-btn:hover {
+  background: #5a6268;
+  color: white;
+}
+
+.action-btn.share-btn.copied {
+  background: #28a745;
+}
+
+.action-btn.share-btn.copied:hover {
+  background: #218838;
+}
