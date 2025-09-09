@@ -43,46 +43,34 @@ const Header = ({ isLoggedIn, setIsLoggedIn, userData, onLoginSuccess, onLogout 
   // Check if current page is homepage
   const isHomePage = location.pathname === '/';
 
-  // ✅ Handle auth button click
+  // Handle auth button click
   const handleAuthClick = () => {
     if (isLoggedIn) {
-      // Call parent logout handler
       onLogout();
     } else {
       setShowAuthModal(true);
     }
   };
 
-  // ✅ Handle login success from AuthModal
+  // Handle login success from AuthModal
   const handleLoginSuccess = (user) => {
     setShowAuthModal(false);
-    // Call parent login success handler
     onLoginSuccess(user);
   };
 
   return (
     <>
       <header className="header">
+        {/* ✅ Row 1: Logo + Login Button (NO search bar here) */}
         <div className="header-row">
-          {/* Hamburger Icon */}
           <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
             <FaBars size={28} color="#111" />
           </button>
-          {/* Logo */}
+          
           <Link to="/" className="header-logo">
             <img src="/logo.png" alt="ExamNation Logo" style={{height:"40px"}} />
           </Link>
-          {/* Search Bar */}
-          <form className="header-search">
-            <input type="text" placeholder="Search..." />
-            <button type="submit" className="search-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-              </svg>
-            </button>
-          </form>
-          {/* Auth Button */}
+          
           <button className="header-auth" onClick={handleAuthClick}>
             {isLoggedIn ? (
               `Logout (${userData?.full_name || 'User'})`
@@ -93,7 +81,21 @@ const Header = ({ isLoggedIn, setIsLoggedIn, userData, onLoginSuccess, onLogout 
             )}
           </button>
         </div>
-        {/* Exam Category Buttons - Only show on Homepage */}
+        
+        {/* ✅ Row 2: Dedicated Search Bar (NEW - No overlap with tags) */}
+        <div className="header-search-row">
+          <form className="header-search-form">
+            <input type="text" placeholder="Search exams, PDFs, magazines..." />
+            <button type="submit" className="search-submit-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+            </button>
+          </form>
+        </div>
+
+        {/* ✅ Row 3: Exam Category Tags (ONLY show once, below search) */}
         {isHomePage && (
           <div className="header-categories">
             <div className="categories-scroll">
@@ -103,6 +105,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn, userData, onLoginSuccess, onLogout 
             </div>
           </div>
         )}
+
         {/* Side Menu (Hamburger) */}
         {menuOpen && (
           <div className="side-menu-overlay" onClick={() => setMenuOpen(false)}>
@@ -127,7 +130,6 @@ const Header = ({ isLoggedIn, setIsLoggedIn, userData, onLoginSuccess, onLogout 
         )}
       </header>
 
-      {/* New AuthModal */}
       <AuthModal 
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}

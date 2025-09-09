@@ -1,139 +1,180 @@
 .header {
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  right: 0; 
-  background: #fff; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
   z-index: 100;
   box-shadow: 0 2px 12px rgba(0,0,0,0.07);
 }
 
+/* ✅ Row 1: Logo + Login (Clean layout) */
 .header-row {
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; /* ✅ Changed from gap to space-between */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 12px 18px;
-  max-width: 1200px; /* ✅ Added max-width */
-  margin: 0 auto; /* ✅ Center the header */
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.hamburger { 
-  background: none; 
-  border: none; 
+.hamburger {
+  background: none;
+  border: none;
   cursor: pointer;
-  flex-shrink: 0; /* ✅ Prevent shrinking */
+  flex-shrink: 0;
 }
 
 .header-logo {
-  flex-shrink: 0; /* ✅ Prevent logo shrinking */
-  z-index: 110; /* ✅ Higher z-index than search */
+  flex-shrink: 0;
+  z-index: 110;
 }
 
-.header-logo img { 
-  height: 40px; 
+.header-logo img {
+  height: 40px;
 }
 
-.header-search { 
-  flex: 1; 
-  position: relative; 
-  max-width: 500px; /* ✅ Limit search bar width */
-  margin: 0 20px; /* ✅ Add margin from logo and auth button */
-  z-index: 105; /* ✅ Lower than logo */
-}
-
-.header-search input { 
-  width: 100%; 
-  padding: 10px 36px 10px 12px; 
-  border-radius: 8px; 
-  border: 2px solid #e0e0e0; 
-}
-
-.search-btn { 
-  position: absolute; 
-  right: 8px; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  background: none; 
-  border: none; 
-  cursor: pointer; 
-}
-
-.header-auth { 
-  background: #4A90E2; 
-  color: #fff; 
-  border: none; 
-  padding: 10px 18px; 
-  border-radius: 8px; 
-  font-weight: 500; 
-  display: flex; 
-  align-items: center; 
+.header-auth {
+  background: #4A90E2;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
   gap: 6px;
-  flex-shrink: 0; /* ✅ Prevent auth button shrinking */
-  white-space: nowrap; /* ✅ Prevent text wrapping */
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.header-categories { 
-  padding: 6px 0; 
-  background: #f8f9fa; 
+/* ✅ Row 2: NEW Dedicated Search Bar (No overlap) */
+.header-search-row {
+  padding: 8px 18px;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
-.categories-scroll { 
-  display: flex; 
-  gap: 12px; 
-  overflow-x: auto; 
-  scrollbar-width: none; 
+.header-search-form {
+  display: flex;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  background: white;
+  border-radius: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.category-btn { 
-  background: #fff; 
-  border: 2px solid #4A90E2; 
-  color: #4A90E2; 
-  border-radius: 20px; 
-  padding: 7px 16px; 
-  font-weight: 500; 
-  cursor: pointer; 
+.header-search-form input {
+  width: 100%;
+  padding: 12px 50px 12px 20px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  outline: none;
+  background: transparent;
 }
 
-.side-menu-overlay { 
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  right: 0; 
-  bottom: 0; 
-  background: rgba(0,0,0,0.15); 
-  z-index: 150; /* ✅ Higher z-index */
+.search-submit-btn {
+  position: absolute;
+  right: 10px;
+  background: #4A90E2;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
 }
 
-.side-menu { 
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 240px; 
-  height: 100vh; 
-  background: #fff; 
-  padding: 28px 18px; 
-  box-shadow: 2px 0 12px rgba(0,0,0,0.07); 
-  animation: slideIn 0.3s; 
-  z-index: 155; /* ✅ Higher z-index */
+.search-submit-btn:hover {
+  background: #357ABD;
 }
 
-.close-btn { 
-  position: absolute; 
-  right: 8px; 
-  top: 6px; 
-  border: none; 
-  background: none; 
-  font-size: 28px; 
-  cursor: pointer; 
+/* ✅ Row 3: Tags (No duplication, proper spacing) */
+.header-categories {
+  padding: 8px 0;
+  background: #fff;
+  border-bottom: 1px solid #eee;
 }
 
-.side-menu ul { 
-  list-style: none; 
-  margin: 32px 0 0 0; 
+.categories-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 18px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.categories-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.category-btn {
+  background: #fff;
+  border: 2px solid #4A90E2;
+  color: #4A90E2;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.category-btn:hover {
+  background: #4A90E2;
+  color: white;
+}
+
+/* Side Menu Styles (Same as before) */
+.side-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.15);
+  z-index: 150;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  background: #fff;
+  padding: 28px 18px;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.07);
+  animation: slideIn 0.3s;
+  z-index: 155;
+}
+
+.close-btn {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  border: none;
+  background: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.side-menu ul {
+  list-style: none;
+  margin: 32px 0 0 0;
   padding: 0;
 }
 
-.side-menu li { 
+.side-menu li {
   margin-bottom: 22px;
 }
 
@@ -168,16 +209,19 @@
   to { transform: translateX(0); }
 }
 
-/* ✅ Mobile Responsive Fixes */
+/* ✅ Mobile Responsive (Clean layout) */
 @media (max-width: 768px) {
   .header-row {
-    gap: 10px;
-    padding: 8px 12px;
+    padding: 8px 15px;
   }
   
-  .header-search {
-    margin: 0 10px;
-    max-width: none;
+  .header-search-row {
+    padding: 8px 15px;
+  }
+  
+  .header-search-form input {
+    font-size: 14px;
+    padding: 10px 45px 10px 15px;
   }
   
   .header-auth {
@@ -186,16 +230,25 @@
   }
   
   .header-auth span {
-    display: none; /* Hide "Login / Register" text on mobile */
+    display: none;
+  }
+  
+  .categories-scroll {
+    padding: 0 15px;
   }
 }
 
 @media (max-width: 480px) {
-  .header-search {
-    margin: 0 5px;
+  .header-search-form input {
+    padding: 8px 40px 8px 12px;
   }
   
-  .header-auth {
+  .search-submit-btn {
     padding: 6px 10px;
+  }
+  
+  .category-btn {
+    padding: 6px 12px;
+    font-size: 14px;
   }
 }
