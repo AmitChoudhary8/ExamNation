@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaStar, FaDownload, FaEye, FaShare } from 'react-icons/fa';
 import ShareButton from '../components/ShareButton';
-import { getPDFByTitle, ratePDF } from '../utils/pdfService';
+import { getPDFByTitle, ratePDF } from '/src/utils/pdfService';
 import './PDFDetails.css';
 
 const PDFDetails = () => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaBookmark, FaRegBookmark, FaShare, FaStar } from 'react-icons/fa';
 import ShareButton from './ShareButton';
-import { toggleBookmark } from '../utils/pdfService';
+import { toggleBookmark } from '/src/utils/pdfService';
 import './PDFCard.css';
 
 const PDFCard = ({ pdf, isBookmarked, onBookmarkToggle }) => {

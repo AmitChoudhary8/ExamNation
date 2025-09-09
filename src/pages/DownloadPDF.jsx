@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PDFCard from '../components/PDFCard';
 import PDFFilters from '../components/PDFFilters';
-import { getPDFs } from '../utils/pdfService';
+import { getPDFs } from '/src/utils/pdfService';
 import './DownloadPDF.css';
 
 const DownloadPDF = () => {

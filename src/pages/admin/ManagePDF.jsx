@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
 import Multiselect from 'multiselect-react-dropdown';
-import { getPDFs, createPDF, updatePDF, deletePDF } from '../utils/pdfService';
+import { getPDFs, createPDF, updatePDF, deletePDF } from '/src/utils/pdfService';
 import './ManagePDF.css';
 
 const ManagePDF = () => {
