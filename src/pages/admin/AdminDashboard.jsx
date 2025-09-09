@@ -11,6 +11,7 @@ import {
   FaSignOutAlt,  // ✅ FaSignOutAlt instead of FiLogOut
   FaUser
 } from 'react-icons/fa';
+import ManagePDF from './ManagePDF';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {

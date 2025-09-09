@@ -13,6 +13,8 @@ import Footer from './components/Footer';
 import SupportUs from './pages/SupportUs';
 // ✅ Fixed import path - relative instead of absolute
 import AdminDashboard from './pages/admin/AdminDashboard';
+import ManagePDF from './pages/admin/ManagePDF';
+import PDFDetails from './pages/PDFDetails';
 import './App.css';
 
 function App() {
@@ -75,6 +77,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/download-pdf" element={<DownloadPDF />} />
+            <Route path="/download-pdf/:title" element={<PDFDetails />} />
             <Route path="/magazines" element={<Magazines />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/request" element={<Request />} />
@@ -84,6 +87,7 @@ function App() {
             <Route path="/about-us" element={<AboutUs />} />
             {/* ✅ Admin routes */}
             <Route path="/AdminDash/*" element={<AdminDashboard />} />
+            <Route path="/AdminDash/managepdf" element={<ManagePDF />} />
           </Routes>
         </main>
         <Footer />
